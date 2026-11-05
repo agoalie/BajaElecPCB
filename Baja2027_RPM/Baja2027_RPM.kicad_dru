@@ -1,0 +1,9 @@
+(version 1)
+(rule Minimum_clearance_2
+	(constraint clearance (min 0.1mm))
+)
+
+(rule mounting_hole_pour_clearance
+    (constraint hole_clearance (min 3mm))
+    (condition "A.Type == 'Zone' && B.memberOfFootprint('H*')")
+)

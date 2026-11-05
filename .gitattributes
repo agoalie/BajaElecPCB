@@ -1,0 +1,29 @@
+# KiCad files always use LF so Windows and macOS checkouts don't show false diffs.
+*.kicad_pcb     text eol=lf
+*.kicad_sch     text eol=lf
+*.kicad_pro     text eol=lf
+*.kicad_sym     text eol=lf
+*.kicad_mod     text eol=lf
+*.kicad_dru     text eol=lf
+*.kicad_wks     text eol=lf
+fp-lib-table    text eol=lf
+sym-lib-table   text eol=lf
+
+# Line-based merges can silently break a board or schematic, so a conflict on
+# these files must be resolved by picking one side and redoing the other's work.
+*.kicad_pcb     merge=binary
+*.kicad_sch     merge=binary
+
+# Collapse machine-written files in GitHub's diff view.
+*.kicad_pcb     linguist-generated
+*.kicad_sch     linguist-generated
+*.gbr           linguist-generated -diff
+*.gbrjob        linguist-generated -diff
+*.drl           linguist-generated -diff
+*.pos           linguist-generated
+
+*.step          binary
+*.stp           binary
+*.wrl           binary
+*.zip           binary
+*.numbers       binary

@@ -1,0 +1,118 @@
+(footprint "LinPot"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "REF**"
+		(at 0 -2.5 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(uuid "ab7c2cfa-ef86-48d8-80b6-f1bb331a8c29")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "LinPot"
+		(at 0 -1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "c0232564-6496-4bfe-b6ed-1eacdf6c0907")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "56174cbc-9e32-4871-bed1-c0f48beabf2f")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "836ee807-08cb-421f-bde5-ddac5a357d91")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_text user "${REFERENCE}"
+		(at 0 1 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "0f5bf5dc-6fc1-427c-ba0c-1a77377b4ec3")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" thru_hole roundrect
+		(at 5 0 90)
+		(size 4 7)
+		(drill oval 3 1
+			(offset 0 2.5)
+		)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "f07d0b8f-1f83-4e80-bb1b-59b9b2646832")
+	)
+	(pad "2" thru_hole roundrect
+		(at 0 5)
+		(size 4 7)
+		(drill oval 3 1
+			(offset 0 2.5)
+		)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "648733d0-fe0e-4915-8d1c-07f27862933d")
+	)
+	(pad "3" thru_hole roundrect
+		(at -5 0 270)
+		(size 4 7)
+		(drill oval 3 1
+			(offset 0 2.5)
+		)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "da9b82bd-6e26-41dd-a026-2f2e8a48d945")
+	)
+	(pad "4" thru_hole roundrect
+		(at 0 -5 180)
+		(size 5 9)
+		(drill oval 4 1
+			(offset 0 3.5)
+		)
+		(layers "*.Cu" "*.Mask")
+		(remove_unused_layers no)
+		(roundrect_rratio 0.15)
+		(thermal_bridge_angle 45)
+		(uuid "843047e1-2052-4661-94d6-39b9832dd32a")
+	)
+	(embedded_fonts no)
+)

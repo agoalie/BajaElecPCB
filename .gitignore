@@ -1,0 +1,24 @@
+# macOS / Windows junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# KiCad backups, local history, and per-user state
+*-backups/
+.history/
+.history_trim/
+*.kicad_prl
+fp-info-cache
+*.lck
+_autosave-*
+~*
+*.bak
+
+# Whole-board STEP exports directly in a board folder are large and regenerable.
+# Part models that the board references belong in <board>/3dmodels/ and are tracked.
+/*/*.step
+/*/*.stp
+
+# tools/pcbdiff.py output
+pcbdiff-out/
+__pycache__/
