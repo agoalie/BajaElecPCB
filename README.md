@@ -18,17 +18,41 @@ Clone it somewhere outside OneDrive or SharePoint. Sync tools can corrupt a `.gi
 
 ## Daily workflow
 
+Each board gets its own branch while it's being designed, such as `daq`. Small fixes to a
+finished board can use a short branch, such as `rpm/move-connector`.
+
 1. Update first: `git switch main && git pull`
-2. Branch: `git switch -c rpm/move-connector`
+2. Branch: `git switch -c daq`
 3. Make your change in KiCad and save.
-4. See what changed: `python3 tools/pcbdiff.py Baja2027_RPM --open`
-5. Commit and push: `git add Baja2027_RPM && git commit -m "RPM: move J5 to the board edge" && git push -u origin HEAD`
-6. Open a pull request. The checks below run on it automatically.
+4. See what changed: `python3 tools/pcbdiff.py Baja2027_DAQ --open`
+5. Commit and push: `git add Baja2027_DAQ && git commit -m "DAQ: add CAN transceiver" && git push -u origin HEAD`
+6. Open a pull request early, with a title like `WIP: DAQ board`. The checks below run on
+   every push.
+7. Merge at each milestone: once the schematic has been reviewed, and again when the layout
+   has been reviewed and is ready to order.
 
 **Only one person should edit a given `.kicad_pcb` or `.kicad_sch` at a time.** Git can't
 merge these files. If two people change the same one, Git reports a conflict, and one of
 them has to redo their work on top of the other's version. Say who's working on which
 board before you start. Separate schematic sheets can be edited by different people.
+
+**A modified `.kicad_pcb` doesn't always mean the design changed.** KiCad can reorder a
+file's contents when it saves, which shows up as hundreds of changed lines. Run
+`pcbdiff.py` to see whether anything real changed.
+
+## Tagging what you order
+
+When a board goes to fabrication, export it, merge to `main`, and tag that commit:
+
+```sh
+git switch main && git pull
+git tag rpm-v1.1
+git push origin rpm-v1.1
+```
+
+Name tags `<board>-v<version>` and use the same version on the silkscreen. Use a new version
+for each physically different board, and don't move a tag once that board has been ordered.
+To see what has changed since an order, run `python3 tools/pcbdiff.py Baja2027_RPM rpm-v1.0 --open`.
 
 ## Tools
 
@@ -66,7 +90,9 @@ python3 tools/kicad_jlc_export.py Baja2027_RPM
 ```
 
 Writes the gerber and drill zip, BOM, and CPL to `<board>/jlc_export/`. Rotation fixes
-found in JLCPCB's preview go in `<board>/jlc_export.json`.
+found in JLCPCB's preview go in `<board>/jlc_export.json`. This is the only fabrication
+output to commit, so re-run it and commit the result before ordering. Don't commit exports
+from KiCad's plot or BOM windows, because they go stale.
 
 ### Pull request checks
 
@@ -84,12 +110,15 @@ right-click menu in the file tree, if you'd rather not use the command line.
    one `.kicad_pro`.
 2. Keep project-specific footprints in `<board>/Library.pretty` and 3D models in
    `<board>/3dmodels`, referenced through `${KIPRJMOD}`, so the board works on any computer.
-3. Add it to the table above.
+3. Open and save it in KiCad 10 once, then commit before making real changes. This stops
+   a later save from reordering the whole file, which matters most for a board started
+   elsewhere or in an older version.
+4. Add it to the table above.
 
 ## What's tracked
 
 **Tracked:** schematics, PCB, project and rule files, local libraries, part 3D models, and
-fabrication outputs.
+`jlc_export/`.
 
 **Ignored:** KiCad backups and local history, per-user `.kicad_prl` files, caches, and
 whole-board STEP exports. Regenerate STEP files with **File → Export → STEP**. GitHub
