@@ -13,6 +13,10 @@ fp-info-cache
 _autosave-*
 ~*
 *.bak
+*.kicad_pcb-bak
+*.kicad_sch-bak
+*-save.kicad_pcb
+\#auto_saved_files\#
 
 # Whole-board STEP exports directly in a board folder are large and regenerable.
 # Part models that the board references belong in <board>/3dmodels/ and are tracked.
