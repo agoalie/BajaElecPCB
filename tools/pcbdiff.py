@@ -154,8 +154,21 @@ def svg_size(text):
 
 
 def fingerprint(text):
-    """Hash an SVG, ignoring the export date and filename KiCad writes into it."""
-    return hashlib.sha256(re.sub(r"<title>.*?</title>", "", text, flags=re.S).encode()).hexdigest()
+    """Hash an SVG's shapes so drawing them in another order counts as unchanged.
+
+    KiCad's board files can list tracks in a new order after a save. Each shape keeps
+    its enclosing group styles, so a change such as a new track width still counts.
+    The export date and filename KiCad writes into the SVG are ignored.
+    """
+    groups, shapes = [], []
+    for piece in re.split(r"(?=<)", re.sub(r"<title>.*?</title>", "", text, flags=re.S)):
+        if re.match(r"<g[\s>]", piece):
+            groups.append(piece.strip())
+        elif piece.startswith("</g"):
+            groups.pop()
+        else:
+            shapes.append("\n".join(groups + [piece.strip()]))
+    return hashlib.sha256("\n".join(sorted(shapes)).encode()).hexdigest()
 
 
 def crop(text, box):
