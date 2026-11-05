@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ diff</title>
+<style>
+  :root { --bg:#f4f4f2; --panel:#fff; --line:#d9d8d3; --ink:#1e1e1c; --dim:#6c6b66; --removed:#e5002b; --added:#00aa46; --accent:#1f5fbf; }
+  * { box-sizing:border-box; }
+  html,body { height:100%; margin:0; }
+  body { display:grid; grid-template:auto 1fr / 230px 1fr; font:14px/1.4 system-ui,sans-serif; color:var(--ink); background:var(--bg); }
+  header { grid-column:1/3; display:flex; flex-wrap:wrap; gap:12px; align-items:center; padding:8px 14px; background:var(--panel); border-bottom:1px solid var(--line); }
+  header b { font-size:15px; }
+  code { font:12px ui-monospace,Menlo,monospace; }
+  .spacer { flex:1; }
+  .modes button { font:inherit; padding:3px 10px; border:1px solid var(--line); background:var(--panel); color:inherit; cursor:pointer; }
+  .modes button:not(:first-child) { border-left:0; }
+  .modes button.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .key i { display:inline-block; width:10px; height:10px; margin:0 4px 0 10px; }
+  nav { overflow:auto; background:var(--panel); border-right:1px solid var(--line); padding:8px 0 16px; }
+  nav h2 { font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--dim); margin:12px 14px 4px; }
+  nav button { display:flex; gap:8px; align-items:center; width:100%; text-align:left; font:inherit; border:0; background:none; color:inherit; padding:4px 14px; cursor:pointer; }
+  nav button:hover { background:var(--bg); }
+  nav button.on { background:#e4ecf8; }
+  nav button.same { color:var(--dim); }
+  nav .dot { flex:none; width:8px; height:8px; border-radius:50%; }
+  nav .changed .dot { background:#e08a00; }
+  nav label { display:block; padding:2px 14px 6px; color:var(--dim); }
+  main { position:relative; min-width:0; min-height:0; display:flex; overflow:hidden; }
+  .pane { position:relative; flex:1; min-width:0; overflow:hidden; cursor:grab; background:#c9c8c3; }
+  .pane + .pane { border-left:2px solid var(--line); }
+  .pane .tag { position:absolute; top:8px; left:8px; z-index:2; padding:1px 7px; background:rgba(0,0,0,.65); color:#fff; font-size:12px; border-radius:3px; }
+  .paper { position:absolute; background:#fff; isolation:isolate; box-shadow:0 1px 6px rgba(0,0,0,.3); }
+  .sheet { position:absolute; inset:0; background:#fff; isolation:isolate; }
+  .sheet img { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; user-select:none; }
+  .tinted { mix-blend-mode:multiply; }
+  .tinted::after { content:""; position:absolute; inset:0; mix-blend-mode:screen; background:var(--tint); }
+  .handle { position:absolute; top:0; bottom:0; width:3px; margin-left:-1px; background:var(--accent); cursor:ew-resize; z-index:3; }
+  #tables { flex:1; overflow:auto; padding:20px 24px; }
+  #tables h3 { margin:18px 0 6px; }
+  #tables h3:first-child { margin-top:0; }
+  table { border-collapse:collapse; background:var(--panel); width:100%; max-width:1000px; }
+  td,th { text-align:left; padding:4px 10px; border:1px solid var(--line); vertical-align:top; }
+  td:first-child { white-space:nowrap; }
+  .added { color:#00803a; } .removed { color:#c00024; } .changed { color:#a86400; }
+  .none { color:var(--dim); }
+  @media (max-width:700px) { body { grid-template:auto auto 1fr / 1fr; } header { grid-column:1; } nav { max-height:30vh; border-right:0; border-bottom:1px solid var(--line); } }
+</style>
+</head>
+<body>
+<header>
+  <b>__TITLE__</b>
+  <span><code id="base"></code> → <code id="head"></code></span>
+  <span class="spacer"></span>
+  <span class="key" id="key"><i style="background:var(--removed)"></i>removed<i style="background:var(--added)"></i>added<i style="background:#111"></i>unchanged</span>
+  <span class="modes" id="modes"></span>
+</header>
+<nav id="nav"></nav>
+<main id="main"></main>
+<script>
+const DATA = __DATA__;
+const MODES = [["overlay","Overlay"],["side","Side by side"],["swipe","Swipe"]];
+const PX_PER_MM = 4;
+let mode = "overlay", current = null, onlyChanged = false;
+let view = {x:0, y:0, z:1}, swipe = 0.5;
+const main = document.getElementById("main"), nav = document.getElementById("nav");
+document.getElementById("base").textContent = DATA.base;
+document.getElementById("head").textContent = DATA.head;
+
+function sheet(src, tint) {
+  const s = document.createElement("div");
+  s.className = "sheet" + (tint ? " tinted" : "");
+  if (tint) s.style.setProperty("--tint", tint);
+  if (src) { const img = new Image(); img.src = src.split("/").map(encodeURIComponent).join("/"); img.draggable = false; s.append(img); }
+  return s;
+}
+function pane(tag, sheets) {
+  const p = document.createElement("div"); p.className = "pane";
+  if (tag) { const t = document.createElement("span"); t.className = "tag"; t.textContent = tag; p.append(t); }
+  const paper = document.createElement("div"); paper.className = "paper"; paper.append(...sheets); p.append(paper);
+  main.append(p);
+  return p;
+}
+function place() {
+  const [w, h] = current.size;
+  main.querySelectorAll(".paper").forEach(p => {
+    p.style.left = view.x + "px"; p.style.top = view.y + "px";
+    p.style.width = w * PX_PER_MM * view.z + "px"; p.style.height = h * PX_PER_MM * view.z + "px";
+  });
+  const top = main.querySelector(".swipe-top");
+  if (top) {
+    const x = swipe * main.clientWidth;
+    const inPaper = (x - view.x) / (w * PX_PER_MM * view.z) * 100;
+    top.style.clipPath = `inset(0 0 0 ${inPaper}%)`;
+    main.querySelector(".handle").style.left = x + "px";
+  }
+}
+function fit() {
+  const [w, h] = current.size, p = main.querySelector(".pane");
+  view.z = Math.min(p.clientWidth / (w * PX_PER_MM), p.clientHeight / (h * PX_PER_MM)) * 0.95;
+  view.x = (p.clientWidth - w * PX_PER_MM * view.z) / 2;
+  view.y = (p.clientHeight - h * PX_PER_MM * view.z) / 2;
+  place();
+}
+function showTables() {
+  main.replaceChildren();
+  const box = document.createElement("div"); box.id = "tables";
+  for (const t of DATA.tables) {
+    const h = document.createElement("h3"); h.textContent = t.title; box.append(h);
+    if (!t.rows.length) { const p = document.createElement("p"); p.className = "none"; p.textContent = "No changes."; box.append(p); continue; }
+    const table = document.createElement("table");
+    table.innerHTML = "<colgroup><col style='width:90px'><col style='width:220px'><col></colgroup><tr><th>Change</th><th>Item</th><th>Details</th></tr>";
+    for (const row of t.rows) {
+      const tr = table.insertRow();
+      row.forEach((text, i) => { const td = tr.insertCell(); td.textContent = text; if (!i) td.className = text; });
+    }
+    box.append(table);
+  }
+  main.append(box);
+}
+function show(keepView) {
+  document.getElementById("key").style.visibility = current && mode === "overlay" ? "" : "hidden";
+  main.replaceChildren();
+  if (!current) { showTables(); renderNav(); return; }
+  const {base, head} = current;
+  if (mode === "overlay") {
+    pane(null, [sheet(base, "var(--removed)"), sheet(head, "var(--added)")]);
+  } else if (mode === "side") {
+    pane("Old: " + DATA.base, [sheet(base)]);
+    pane("New: " + DATA.head, [sheet(head)]);
+  } else {
+    const top = sheet(head); top.classList.add("swipe-top");
+    pane(null, [sheet(base), top]);
+    const handle = document.createElement("div"); handle.className = "handle"; main.append(handle);
+  }
+  keepView ? place() : fit();
+  renderNav();
+}
+function renderNav() {
+  nav.replaceChildren();
+  const overview = button("Change list", !current, () => { current = null; show(); });
+  nav.append(overview);
+  const filter = document.createElement("label");
+  const box = document.createElement("input"); box.type = "checkbox"; box.checked = onlyChanged;
+  box.onchange = () => { onlyChanged = box.checked; renderNav(); };
+  filter.append(box, " Only changed"); nav.append(filter);
+  for (const [kind, title] of [["sch","Schematic"],["pcb","PCB layers"]]) {
+    const items = DATA.items.filter(i => i.kind === kind && (i.changed || !onlyChanged));
+    if (!items.length) continue;
+    const h = document.createElement("h2"); h.textContent = title; nav.append(h);
+    for (const item of items) {
+      const b = button(item.label, item === current, () => { const keep = current && current.size + "" === item.size + ""; current = item; show(keep); });
+      b.classList.add(item.changed ? "changed" : "same");
+      nav.append(b);
+    }
+  }
+}
+function button(label, on, click) {
+  const b = document.createElement("button");
+  const dot = document.createElement("span"); dot.className = "dot";
+  b.append(dot, label); b.onclick = click; if (on) b.className = "on";
+  return b;
+}
+for (const [id, label] of MODES) {
+  const b = document.createElement("button"); b.textContent = label; b.dataset.mode = id;
+  b.onclick = () => { mode = id; markMode(); if (current) show(); };
+  document.getElementById("modes").append(b);
+}
+function markMode() { document.querySelectorAll("#modes button").forEach(b => b.classList.toggle("on", b.dataset.mode === mode)); }
+
+main.addEventListener("wheel", e => {
+  if (!current) return;
+  e.preventDefault();
+  const r = e.target.closest(".pane").getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top;
+  const k = Math.exp(-e.deltaY * 0.0015), z = Math.min(40, Math.max(0.05, view.z * k)), f = z / view.z;
+  view.x = mx - (mx - view.x) * f; view.y = my - (my - view.y) * f; view.z = z;
+  place();
+}, {passive:false});
+main.addEventListener("pointerdown", e => {
+  if (!current) return;
+  const dragHandle = e.target.classList.contains("handle");
+  const sx = e.clientX, sy = e.clientY, vx = view.x, vy = view.y;
+  const move = m => {
+    if (dragHandle) swipe = Math.min(1, Math.max(0, (m.clientX - main.getBoundingClientRect().left) / main.clientWidth));
+    else { view.x = vx + m.clientX - sx; view.y = vy + m.clientY - sy; }
+    place();
+  };
+  const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); };
+  addEventListener("pointermove", move); addEventListener("pointerup", up);
+});
+addEventListener("resize", () => { if (current) fit(); });
+markMode();
+current = DATA.items.find(i => i.changed) || null;
+show();
+</script>
+</body>
+</html>
