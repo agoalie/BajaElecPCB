@@ -26,8 +26,8 @@ finished board can use a short branch, such as `rpm/move-connector`.
 3. Make your change in KiCad and save.
 4. See what changed: `python3 tools/pcbdiff.py Baja2027_DAQ --open`
 5. Commit and push: `git add Baja2027_DAQ && git commit -m "DAQ: add CAN transceiver" && git push -u origin HEAD`
-6. Open a pull request early, with a title like `WIP: DAQ board`. The checks below run on
-   every push.
+6. Open a pull request early, with a title like `WIP: DAQ board`, and run the diff and
+   checks below before asking for a review.
 7. Merge at each milestone: once the schematic has been reviewed, and again when the layout
    has been reviewed and is ready to order.
 
@@ -93,13 +93,6 @@ Writes the gerber and drill zip, BOM, and CPL to `<board>/jlc_export/`. Rotation
 found in JLCPCB's preview go in `<board>/jlc_export.json`. This is the only fabrication
 output to commit, so re-run it and commit the result before ordering. Don't commit exports
 from KiCad's plot or BOM windows, because they go stale.
-
-### Pull request checks
-
-Each pull request that changes a board runs ERC, DRC, and the visual diff on GitHub. Open
-the PR's **Checks** tab and then **PCB checks** to see the results. Download the `pcbdiff`
-artifact and open `index.html` to view the diff. Violations are reported but don't block
-merging; many boards carry intentional ones.
 
 KiCad's project window also has built-in Git support (commit, push, pull) under the
 right-click menu in the file tree, if you'd rather not use the command line.
