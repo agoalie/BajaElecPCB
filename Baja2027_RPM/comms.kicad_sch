@@ -3111,6 +3111,16 @@
 	)
 	(wire
 		(pts
+			(xy 71.12 68.58) (xy 71.12 72.39)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c5502a6-a77b-4d0f-a3f4-31fb6b1b4594")
+	)
+	(wire
+		(pts
 			(xy 30.48 163.83) (xy 71.12 163.83)
 		)
 		(stroke
@@ -3128,16 +3138,6 @@
 			(type default)
 		)
 		(uuid "50e5ac92-ed97-4459-95ca-e92f8ca43aea")
-	)
-	(wire
-		(pts
-			(xy 72.39 97.79) (xy 68.58 97.79)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5195430c-06bb-47ce-9f66-4d7f3a858c22")
 	)
 	(wire
 		(pts
@@ -3741,6 +3741,16 @@
 	)
 	(wire
 		(pts
+			(xy 68.58 97.79) (xy 72.39 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eba917c8-0a38-429b-a6be-79f7f37513db")
+	)
+	(wire
+		(pts
 			(xy 71.12 130.81) (xy 71.12 132.08)
 		)
 		(stroke
@@ -4094,6 +4104,30 @@
 		(uuid "9f1fdcc7-70cd-452b-bc48-d374e0d0beb5")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 22.9591 156.21 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+	)
+	(global_label "USB_VBUS"
+		(shape input)
+		(at 71.12 68.58 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "ad76ac75-28b8-4b3d-b9af-52657c2a2855")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 58.4586 68.58 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5185,6 +5219,84 @@
 			(project "Baja2027_RPM"
 				(path "/e43ed92e-f66a-4953-937a-5c863670e812/12b0c70e-41af-4c16-8dd8-7ecd90887446"
 					(reference "J3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 71.12 80.01 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "6cb64ec3-87c5-4df1-b38d-40045266f114")
+		(property "Reference" "#PWR052"
+			(at 71.12 86.36 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 71.12 85.09 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 71.12 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 71.12 80.01 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b9d11044-e40a-4ee9-b829-8e3f47c71b04")
+		)
+		(instances
+			(project "Baja2027_RPM"
+				(path "/e43ed92e-f66a-4953-937a-5c863670e812/12b0c70e-41af-4c16-8dd8-7ecd90887446"
+					(reference "#PWR052")
 					(unit 1)
 				)
 			)
@@ -6572,6 +6684,99 @@
 			(project "Baja2027_RPM"
 				(path "/e43ed92e-f66a-4953-937a-5c863670e812/12b0c70e-41af-4c16-8dd8-7ecd90887446"
 					(reference "R9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 71.12 76.2 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "c71ecbb3-220d-4c18-b230-15ca9dbd2fee")
+		(property "Reference" "C18"
+			(at 74.93 74.9299 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "100n"
+			(at 74.93 77.4699 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 70.1548 72.39 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 71.12 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 71.12 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC PART #" "C1525"
+			(at 71.12 76.2 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "c15017dd-73a1-4ea6-a1b0-0772ecb1368d")
+		)
+		(pin "1"
+			(uuid "05f64adc-e8ba-4fa7-a243-b992e35b020c")
+		)
+		(instances
+			(project "Baja2027_RPM"
+				(path "/e43ed92e-f66a-4953-937a-5c863670e812/12b0c70e-41af-4c16-8dd8-7ecd90887446"
+					(reference "C18")
 					(unit 1)
 				)
 			)
